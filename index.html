@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Distance</title>
+    <script src="https://cdn.jsdelivr.net/npm/@rtirl/api@latest/lib/index.min.js"></script>
+  </head>
+  <body>
+    <div id="output">Waiting...</div>
+
+    <script>
+      const output = document.getElementById("output");
+
+      const client = new RTIRL.Client({
+        key: "rwnzr4rrfrltggq9"
+      });
+
+      client.on("distance", (data) => {
+        const km = (data?.value || 0).toFixed(1);
+        output.textContent = km;
+      });
+
+      client.connect();
+    </script>
+  </body>
+</html>
