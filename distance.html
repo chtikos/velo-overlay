@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>RTIRL Distance Export</title>
-    <script src="https://cdn.jsdelivr.net/npm/@rtirl/api@latest/lib/index.min.js"></script>
+    <script src="https://unpkg.com/@rtirl/api@latest/dist/index.umd.js"></script>
     <style>
       body {
         background: black;
@@ -26,12 +26,12 @@
 
       client.on("distance", (data) => {
         const km = (data.distance / 1000).toFixed(1);
-        document.body.innerText = km; // <-- juste "12.4"
+        document.getElementById("distance").innerText = km;
       });
 
       client.connect().catch((err) => {
-        document.body.innerText = "Erreur";
-        console.error(err);
+        document.getElementById("distance").innerText = "Erreur";
+        console.error("Erreur RTIRL :", err);
       });
     </script>
   </body>
