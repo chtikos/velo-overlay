@@ -2,37 +2,40 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>RTIRL Distance Export</title>
-    <script src="https://unpkg.com/@rtirl/api@latest/dist/index.umd.js"></script>
+    <title>Distance RTIRL</title>
     <style>
       body {
-        background: black;
-        color: white;
-        font-size: 2em;
-        font-family: sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
         margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        color: white;
+        background: transparent;
+        font-size: 2em;
+        text-align: center;
       }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@rtirl/api@latest/lib/index.min.js"></script>
   </head>
   <body>
     <div id="distance">Waiting...</div>
+
     <script>
-      const key = "rwnzr4rrfrltggq9";
-      const client = new rtirl.Client({ key });
+      const client = new rtirl.Client("rwnzr4rrfrltggq9");
 
       client.on("distance", (data) => {
-        const km = (data.distance / 1000).toFixed(1);
-        document.getElementById("distance").innerText = km;
+        if (data && data.value) {
+          const distance = (data.value / 1000).toFixed(1); // m → km
+          document.getElementById("distance").innerText = distance;
+        }
       });
 
-      client.connect().catch((err) => {
-        document.getElementById("distance").innerText = "Erreur";
-        console.error("Erreur RTIRL :", err);
-      });
+      // Si aucune donnée reçue après 5 secondes, afficher erreur
+      setTimeout(() => {
+        const current = document.getElementById("distance").innerText;
+        if (current === "Waiting...") {
+          document.getElementById("distance").innerText = "Pas de données RTIRL";
+        }
+      }, 5000);
     </script>
   </body>
 </html>
