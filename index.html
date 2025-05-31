@@ -2,30 +2,36 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Distance en km</title>
+    <title>Distance RTIRL</title>
+    <script src="https://cdn.jsdelivr.net/npm/@rtirl/api@latest/lib/index.min.js"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+        font-size: 2em;
+        color: white;
+        background: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+    </style>
   </head>
   <body>
     <div id="distance">Chargement...</div>
-
     <script>
-      async function getDistance() {
-        try {
-          const response = await fetch('https://overlays.rtirl.com/distance/km.html?key=rwnzr4rrfrltggq9');
-          const html = await response.text();
+      const key = "rwnzr4rrfrltggq9";
+      const client = new rtirl.Client({ key });
 
-          const match = html.match(/<div id="text">([\d.]+) km<\/div>/);
-          if (match) {
-            document.getElementById('distance').textContent = match[1];
-          } else {
-            document.getElementById('distance').textContent = 'Erreur données';
-          }
-        } catch (e) {
-          document.getElementById('distance').textContent = 'Erreur réseau';
-        }
-      }
+      client.on("distance", (data) => {
+        const km = (data.distance / 1000).toFixed(1);
+        document.getElementById("distance").textContent = `${km}`;
+      });
 
-      getDistance();
-      setInterval(getDistance, 30000); // Mise à jour toutes les 30s
+      client.connect().catch((err) => {
+        document.getElementById("distance").textContent = "Erreur RTIRL";
+        console.error(err);
+      });
     </script>
   </body>
 </html>
