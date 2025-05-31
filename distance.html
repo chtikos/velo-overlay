@@ -1,41 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <title>Distance RTIRL</title>
+    <title>Distance en direct</title>
+    <script src="https://cdn.jsdelivr.net/npm/@rtirl/api@latest/lib/index.min.js"></script>
     <style>
       body {
         margin: 0;
-        padding: 0;
-        font-family: sans-serif;
-        color: white;
         background: transparent;
-        font-size: 2em;
+        font-family: sans-serif;
+        font-size: 40px;
+        color: white;
         text-align: center;
       }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@rtirl/api@latest/lib/index.min.js"></script>
   </head>
   <body>
     <div id="distance">Waiting...</div>
 
     <script>
-      const client = new rtirl.Client("rwnzr4rrfrltggq9");
-
-      client.on("distance", (data) => {
-        if (data && data.value) {
-          const distance = (data.value / 1000).toFixed(1); // m → km
-          document.getElementById("distance").innerText = distance;
+      window.addEventListener("load", () => {
+        if (typeof rtirl === "undefined") {
+          document.getElementById("distance").innerText = "Erreur RTIRL";
+          return;
         }
+
+        const client = new rtirl.Client("cmaojg81nfzd5l8x");
+
+        client.on("distance", (data) => {
+          if (data && data.value) {
+            const distance = (data.value / 1000).toFixed(1); // mètres → km
+            document.getElementById("distance").innerText = distance;
+          }
+        });
+
+        setTimeout(() => {
+          const current = document.getElementById("distance").innerText;
+          if (current === "Waiting...") {
+            document.getElementById("distance").innerText = "Pas de données RTIRL";
+          }
+        }, 5000);
       });
-
-      // Si aucune donnée reçue après 5 secondes, afficher erreur
-      setTimeout(() => {
-        const current = document.getElementById("distance").innerText;
-        if (current === "Waiting...") {
-          document.getElementById("distance").innerText = "Pas de données RTIRL";
-        }
-      }, 5000);
     </script>
   </body>
 </html>
